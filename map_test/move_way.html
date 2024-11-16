@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kakao Map Sequential Marker Saving</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b666ceb7cbc80f27663baeee640e9fd"></script>
+  <style>
+    #map {
+      width: 100%;
+      height: 450px;
+    }
+    #controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .marker-list {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div id="controls">
+    <button onclick="saveMarkers()">저장</button>
+    <button onclick="resetMarkers()">초기화</button>
+  </div>
+
+  <div class="marker-list">
+    <h3>저장된 마커 순서:</h3>
+    <ul id="markerList"></ul>
+  </div>
+
+  <script>
+    let map;
+    let markers = []; // 지도에 표시된 마커 객체를 저장
+    let markerData = []; // 마커의 위도, 경도 데이터를 저장
+
+    function initMap() {
+      map = new kakao.maps.Map(document.getElementById("map"), {
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3,
+      });
+
+      // 지도 클릭 이벤트로 마커 추가
+      kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+        const latLng = mouseEvent.latLng;
+
+        // 새로운 마커 생성
+        const marker = new kakao.maps.Marker({
+          position: latLng,
+          map: map,
+        });
+
+        // 마커와 데이터 저장
+        markers.push(marker);
+        markerData.push({ lat: latLng.getLat(), lng: latLng.getLng() });
+
+      });
+    }
+
+    // 마커 데이터를 저장하고 리스트로 표시
+    function saveMarkers() {
+      if (markerData.length === 0) {
+        alert("저장할 마커가 없습니다. 먼저 마커를 추가하세요.");
+        return;
+      }
+
+      const markerList = document.getElementById("markerList");
+      markerList.innerHTML = ""; // 기존 리스트 초기화
+
+      markerData.forEach((data, index) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `마커 ${index + 1}: 위도 ${data.lat}, 경도 ${data.lng}`;
+
+        const viewButton = document.createElement("button");
+        viewButton.textContent = "보기";
+        viewButton.onclick = () => {
+          map.setCenter(new kakao.maps.LatLng(data.lat, data.lng));
+        };
+
+        listItem.appendChild(viewButton);
+        markerList.appendChild(listItem);
+      });
+
+      alert("마커가 저장되었습니다!");
+    }
+
+    // 마커와 데이터를 초기화
+    function resetMarkers() {
+      // 지도에서 마커 제거
+      markers.forEach((marker) => marker.setMap(null));
+      markers = [];
+      markerData = [];
+
+      // 리스트 초기화
+      const markerList = document.getElementById("markerList");
+      markerList.innerHTML = "";
+
+      alert("모든 마커와 데이터가 초기화되었습니다.");
+    }
+
+    // 지도 초기화
+    window.onload = initMap;
+  </script>
+
+</body>
+</html>

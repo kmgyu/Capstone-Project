@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kakao Map 다각형 영역</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b666ceb7cbc80f27663baeee640e9fd&libraries=drawing"></script>
+  <style>
+    #map {
+      width: 100%;
+      height: 450px;
+    }
+    #buttonContainer {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .overlay-list {
+      margin-top: 10px;
+    }
+    .overlay-list button {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div id="buttonContainer">
+    <button onclick="selectPolygon()">다각형 그리기</button>
+    <button onclick="savePolygon()">다각형 저장</button>
+    <button onclick="clearPolygonList()">리스트 초기화</button>
+  </div>
+
+  <div class="overlay-list">
+    <h3>저장된 다각형:</h3>
+    <ul id="polygonList"></ul>
+  </div>
+
+  <script>
+    let map, drawingManager, currentPolygon;
+    let savedPolygons = JSON.parse(localStorage.getItem("savedPolygons")) || [];
+
+    function initMap() {
+      map = new kakao.maps.Map(document.getElementById("map"), {
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3
+      });
+
+      drawingManager = new kakao.maps.drawing.DrawingManager({
+        map: map,
+        drawingMode: [kakao.maps.drawing.OverlayType.POLYGON],
+        polygonOptions: {
+          draggable: true,
+          removable: true,
+          editable: true,
+          strokeColor: "#39f",
+          fillColor: "#39f",
+          fillOpacity: 0.5,
+        }
+      });
+
+      // 현재 다각형을 저장
+      kakao.maps.event.addListener(drawingManager, "drawend", function(data) {
+        if (data.overlayType === kakao.maps.drawing.OverlayType.POLYGON) {
+          if (currentPolygon) currentPolygon.setMap(null); // 기존 제거
+          currentPolygon = data.target; // 새로 그려진 다각형을 현재 다각형으로 저장
+        }
+      });
+
+      renderPolygonList();
+    }
+
+    // 그리기 모드
+    function selectPolygon() {
+      drawingManager.cancel();
+      drawingManager.select(kakao.maps.drawing.OverlayType.POLYGON);
+    }
+
+    // 저장
+    function savePolygon() {
+      if (currentPolygon) {
+        // 다각형의 좌표를 가져와 배열에 저장
+        const path = currentPolygon.getPath().map(coord => ({
+          lat: coord.y, // y 값을 lat으로 사용
+          lng: coord.x  // x 값을 lng으로 사용
+        }));
+        
+        savedPolygons.push(path);
+        localStorage.setItem("savedPolygons", JSON.stringify(savedPolygons));
+
+        // 초기화
+        currentPolygon.setMap(null);
+        currentPolygon = null;
+
+        renderPolygonList();
+        alert("저장");
+      } else {
+        alert("다각형을 그리세요");
+      }
+    }
+
+    // 저장된 다각형 리스트를 화면에 표시
+    function renderPolygonList() {
+      const polygonList = document.getElementById("polygonList");
+      polygonList.innerHTML = ""; // 기존 리스트 초기화
+
+      savedPolygons.forEach((polygon, index) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `다각형 ${index + 1}`;
+        
+        const loadButton = document.createElement("button");
+        loadButton.textContent = "불러오기";
+        loadButton.onclick = () => loadPolygon(index);
+
+        listItem.appendChild(loadButton);
+        polygonList.appendChild(listItem);
+      });
+    }
+
+    // 저장된 다각형을 지도에 표시
+    function loadPolygon(index) {
+      if (savedPolygons.length === 0) {
+        alert("저장된 다각형이 없음");
+        return;
+      }
+
+      const path = savedPolygons[index].map(coord => new kakao.maps.LatLng(coord.lat, coord.lng));
+
+      // 기존 다각형이 있으면 제거
+      if (currentPolygon) {
+        currentPolygon.setMap(null);
+      }
+
+      // 저장된 다각형을 새롭게 그리기
+      currentPolygon = new kakao.maps.Polygon({
+        map: map,
+        path: path,
+        strokeColor: "#39f",
+        fillColor: "#39f",
+        fillOpacity: 0.5,
+        draggable: true,
+        editable: true,
+        removable: true,
+      });
+
+      alert(`다각형 ${index + 1}이(가) 불러와졌습니다!`);
+    }
+
+    // 리스트 초기화
+    function clearPolygonList() {
+      savedPolygons = [];
+      localStorage.removeItem("savedPolygons");
+      renderPolygonList();
+
+      if (currentPolygon) {
+        currentPolygon.setMap(null);
+        currentPolygon = null;
+      }
+
+      alert("리스트 초기화");
+    }
+
+    // 지도 초기화
+    window.onload = initMap;
+  </script>
+
+</body>
+</html>
