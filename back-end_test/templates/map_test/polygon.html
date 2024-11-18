@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kakao Map Polyline</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b666ceb7cbc80f27663baeee640e9fd&libraries=drawing"></script>
+  <style>
+    #map {
+      width: 100%;
+      height: 500px;
+    }
+    #controls {
+      margin-top: 10px;
+    }
+    button {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="controls">
+    <button onclick="startDrawing()">그리기 시작</button>
+    <button onclick="savePolyline()">Polyline 저장</button>
+    <button onclick="loadPolyline()">Polyline 불러오기</button>
+    <button onclick="clearPolyline()">Polyline 초기화</button>
+  </div>
+
+  <script>
+    let map, drawingManager, currentPolyline;
+    let savedPaths = []; // Polyline 경로를 저장할 배열
+
+    function initMap() {
+      // 지도 초기화
+      map = new kakao.maps.Map(document.getElementById("map"), {
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3,
+      });
+
+      // DrawingManager 초기화
+      drawingManager = new kakao.maps.drawing.DrawingManager({
+        map: map,
+        drawingMode: [],
+        polylineOptions: {
+          draggable: true,
+          removable: true,
+          editable: true,
+          strokeWeight: 5,
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.7,
+          strokeStyle: "solid",
+        },
+      });
+
+      // 그리기 완료 이벤트
+      kakao.maps.event.addListener(drawingManager, "drawend", function (data) {
+        if (data.overlayType === kakao.maps.drawing.OverlayType.POLYLINE) {
+          if (currentPolyline) currentPolyline.setMap(null); // 기존 Polyline 제거
+          currentPolyline = data.target; // 새 Polyline 저장
+        }
+      });
+    }
+
+    function startDrawing() {
+      drawingManager.cancel(); //  취소
+      drawingManager.select(kakao.maps.drawing.OverlayType.POLYLINE); // 활성화
+    }
+
+    function savePolyline() {
+      if (currentPolyline) {
+        // 폴리곤 경로 가져오기
+        const path = currentPolyline.getPath().map(coord => coord.toLatLng());
+        const pathArray = path.map(latLng => ({
+          lat: latLng.getLat(),
+          lng: latLng.getLng(),
+        }));
+
+        console.log("저장된 폴리곤 데이터:", pathArray);
+
+        // 서버로 데이터 전송
+        fetch("/save-polygon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ polygon: pathArray }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log("서버 응답:", data);
+            alert("저장");
+          })
+          .catch(error => {
+            console.error("서버로 데이터 전송 중 오류:", error);
+          });
+      } else {
+        alert("없음.");
+      }
+    }
+
+    window.onload = initMap;
+
+    function loadPolyline() {
+      fetch("/load-polyline", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (!data || !data.polyline) {
+            alert("저장된 경로가 없음");
+            return;
+          }
+
+          const pathArray = data.polyline.map(coord => new kakao.maps.LatLng(coord.lat, coord.lng));
+
+          if (currentPolyline) currentPolyline.setMap(null);
+
+          currentPolyline = new kakao.maps.Polyline({
+            map: map,
+            path: pathArray,
+            strokeWeight: 5,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.7,
+            strokeStyle: "solid",
+          });
+
+          alert("불러옴");
+        })
+        .catch(error => {
+          console.error("서버로부터 데이터 불러오기 중 오류:", error);
+        });
+    }
+
+    function clearPolyline() {
+      savedPaths = [];
+      if (currentPolyline) {
+        currentPolyline.setMap(null);
+        currentPolyline = null;
+      }
+      alert("경로가 초기화");
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+</html>
