@@ -42,37 +42,6 @@ def save_markers():
     print("Received marker data:", saved_markers)
 
     return jsonify({"message": "Markers saved successfully", "savedMarkers": saved_markers})
-# @app.route("/save-markers", methods=["POST"])  # Save field_line data to the database
-# def save_markers():
-#     data = request.get_json()
-
-#     if not data or "markers" not in data:
-#         return jsonify({"error": "Invalid data format"}), 400
-
-#     markers = data["markers"]
-#     try:
-#         # Convert marker list to JSON string
-#         field_line = json.dumps(markers)
-
-#         # Create and save the Field instance
-#         new_field = Field(field_line=field_line)
-#         db.session.add(new_field)
-#         db.session.commit()
-
-#         # Update field_name to match the auto-generated id
-#         new_field.field_name = str(new_field.id)
-#         db.session.commit()
-
-#         return jsonify({
-#             "message": "Field saved successfully",
-#             "field_id": new_field.id,
-#             "field_name": new_field.field_name,
-#             "field_line": markers,
-#         }), 200
-
-#     except Exception as e:
-#         db.session.rollback()
-#         return jsonify({"error": str(e)}), 500
 fields = [] # 노지이름, 노지 좌표
 
 saved_polygons = [] # 폴리곤 좌표 리스트 (임시 2차원 리스트로 저장중)
@@ -91,29 +60,6 @@ def save_field():
     print("Current fields:", fields)
 
     return jsonify({"message": "Field saved successfully!", "fields": fields})
-    #     try:
-#         # Convert marker list to JSON string
-#         field_line = json.dumps(markers)
-
-#         # Create and save the Field instance
-#         new_field = Field(field_line=field_line)
-#         db.session.add(new_field)
-#         db.session.commit()
-
-#         # Update field_name to match the auto-generated id
-#         new_field.field_name = str(new_field.id)
-#         db.session.commit()
-
-#         return jsonify({
-#             "message": "Field saved successfully",
-#             "field_id": new_field.id,
-#             "field_name": new_field.field_name,
-#             "field_line": markers,
-#         }), 200
-
-#     except Exception as e:
-#         db.session.rollback()
-#         return jsonify({"error": str(e)}), 500
 
     return jsonify({"message": "Polygon saved successfully!"})
 
