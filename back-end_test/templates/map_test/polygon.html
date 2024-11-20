@@ -3,141 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kakao Map Polyline</title>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b666ceb7cbc80f27663baeee640e9fd&libraries=drawing"></script>
+  <title>노지 생성</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b666ceb7cbc80f27663baeee640e9fd&libraries=drawing,services"></script>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border-bottom: 1px solid #ddd;
+    }
+    #top-bar input[type="text"] {
+      width: 30%;
+      padding: 5px;
+      font-size: 16px;
+    }
     #map {
+      flex: 1;
       width: 100%;
-      height: 500px;
+      height: 100%;
     }
     #controls {
-      margin-top: 10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #f4f4f4;
+      padding: 1px;
+      border: 1px solid #ddd;
+      z-index: 10;
     }
-    button {
-      margin-right: 5px;
+    #controls button {
+      margin-bottom: 5px;
+      width: 100%;
     }
   </style>
 </head>
 <body>
-  <div id="map"></div>
-  <div id="controls">
-    <button onclick="startDrawing()">그리기 시작</button>
-    <button onclick="savePolyline()">Polyline 저장</button>
-    <button onclick="loadPolyline()">Polyline 불러오기</button>
-    <button onclick="clearPolyline()">Polyline 초기화</button>
+  <div id="container">
+    <div id="top-bar">
+      <input type="text" id="fieldName" placeholder="노지 이름을 입력하세요" />
+      <button id="confirmField" onclick="confirmField()">생성 확정</button>
+    </div>
+    <div id="map">
+      <div id="controls">
+        <button id="areaMode" onclick="toggleAreaMode()">면적 생성</button>
+        <input id="searchInput" type="text" placeholder="주소 검색" style="display: none;" />
+        <button id="searchBtn" onclick="searchAddress()" style="display: none;">검색</button>
+        <button id="confirmArea" onclick="confirmArea()" style="display: none;">생성 확정</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    let map, drawingManager, currentPolyline;
-    let savedPaths = []; // Polyline 경로를 저장할 배열
+    let map, drawingManager, currentPolygon, isAreaMode = false;
+    let polygonData = [];
 
     function initMap() {
-      // 지도 초기화
       map = new kakao.maps.Map(document.getElementById("map"), {
         center: new kakao.maps.LatLng(33.450701, 126.570667),
         level: 3,
       });
 
-      // DrawingManager 초기화
       drawingManager = new kakao.maps.drawing.DrawingManager({
         map: map,
         drawingMode: [],
-        polylineOptions: {
+        polygonOptions: {
           draggable: true,
           removable: true,
           editable: true,
-          strokeWeight: 5,
+          strokeWeight: 3,
           strokeColor: "#FF0000",
-          strokeOpacity: 0.7,
-          strokeStyle: "solid",
+          fillColor: "#FFAAAA",
+          fillOpacity: 0.7,
         },
       });
 
-      // 그리기 완료 이벤트
       kakao.maps.event.addListener(drawingManager, "drawend", function (data) {
-        if (data.overlayType === kakao.maps.drawing.OverlayType.POLYLINE) {
-          if (currentPolyline) currentPolyline.setMap(null); // 기존 Polyline 제거
-          currentPolyline = data.target; // 새 Polyline 저장
+        if (data.overlayType === kakao.maps.drawing.OverlayType.POLYGON) {
+          if (currentPolygon) currentPolygon.setMap(null);
+          currentPolygon = data.target;
+          const path = currentPolygon.getPath().map(coord => coord.toLatLng());
+          polygonData = path.map(latLng => ({
+            lat: latLng.getLat(),
+            lng: latLng.getLng(),
+          }));
+          console.log("Polygon data:", polygonData);
         }
       });
     }
 
-    function startDrawing() {
-      drawingManager.cancel(); //  취소
-      drawingManager.select(kakao.maps.drawing.OverlayType.POLYLINE); // 활성화
-    }
+    function toggleAreaMode() {
+      isAreaMode = !isAreaMode;
+      document.getElementById("searchInput").style.display = isAreaMode ? "inline-block" : "none";
+      document.getElementById("searchBtn").style.display = isAreaMode ? "inline-block" : "none";
+      document.getElementById("confirmArea").style.display = isAreaMode ? "inline-block" : "none";
 
-    function savePolyline() {
-      if (currentPolyline) {
-        // 폴리곤 경로 가져오기
-        const path = currentPolyline.getPath().map(coord => coord.toLatLng());
-        const pathArray = path.map(latLng => ({
-          lat: latLng.getLat(),
-          lng: latLng.getLng(),
-        }));
-
-        console.log("저장된 폴리곤 데이터:", pathArray);
-
-        // 서버로 데이터 전송
-        fetch("/save-polygon", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ polygon: pathArray }),
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log("서버 응답:", data);
-            alert("저장");
-          })
-          .catch(error => {
-            console.error("서버로 데이터 전송 중 오류:", error);
-          });
+      if (isAreaMode) {
+        drawingManager.cancel();
+        drawingManager.select(kakao.maps.drawing.OverlayType.POLYGON);
       } else {
-        alert("없음.");
+        drawingManager.cancel();
       }
     }
 
-    window.onload = initMap;
+    function searchAddress() {
+      const searchInput = document.getElementById("searchInput").value;
+      const geocoder = new kakao.maps.services.Geocoder();
 
-    function loadPolyline() {
-      fetch("/load-polyline", {
-        method: "GET",
+      geocoder.addressSearch(searchInput, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+          map.setCenter(coords);
+        } else {
+          alert("검색 결과 없음");
+        }
+      });
+    }
+
+    function confirmArea() {
+      toggleAreaMode();
+      alert("면적 생성이 완료");
+    }
+
+    function confirmField() {
+      const fieldName = document.getElementById("fieldName").value.trim();
+
+      if (!fieldName) {
+        alert("노지 이름 입력");
+        return;
+      }
+
+      if (polygonData.length === 0) {
+        alert("노지 경계 입력");
+        return;
+      }
+
+      const fieldData = {
+        name: fieldName,
+        polygon: polygonData,
+      };
+
+      fetch("/save-field", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fieldData),
       })
         .then(response => response.json())
         .then(data => {
-          if (!data || !data.polyline) {
-            alert("저장된 경로가 없음");
-            return;
-          }
-
-          const pathArray = data.polyline.map(coord => new kakao.maps.LatLng(coord.lat, coord.lng));
-
-          if (currentPolyline) currentPolyline.setMap(null);
-
-          currentPolyline = new kakao.maps.Polyline({
-            map: map,
-            path: pathArray,
-            strokeWeight: 5,
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.7,
-            strokeStyle: "solid",
-          });
-
-          alert("불러옴");
+          console.log("Saved field data:", data);
+          alert("노지 저장");
         })
         .catch(error => {
-          console.error("서버로부터 데이터 불러오기 중 오류:", error);
+          console.error("Error saving field:", error);
         });
-    }
-
-    function clearPolyline() {
-      savedPaths = [];
-      if (currentPolyline) {
-        currentPolyline.setMap(null);
-        currentPolyline = null;
-      }
-      alert("경로가 초기화");
     }
 
     window.onload = initMap;

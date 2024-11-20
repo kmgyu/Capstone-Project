@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+import dotenv
+import os
+
+import pymysql
+pymysql.install_as_MySQLdb()
+
+# # OpenAI API 키 설정
+# openai.api_key = 
+dotenv.load_dotenv()
+DATABASE_URI=os.environ.get('DATABASE_URI')
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+
+db = SQLAlchemy(app)
 
 for_test = 'map_test/'
 
@@ -28,99 +42,81 @@ def save_markers():
     print("Received marker data:", saved_markers)
 
     return jsonify({"message": "Markers saved successfully", "savedMarkers": saved_markers})
+# @app.route("/save-markers", methods=["POST"])  # Save field_line data to the database
+# def save_markers():
+#     data = request.get_json()
 
+#     if not data or "markers" not in data:
+#         return jsonify({"error": "Invalid data format"}), 400
 
+#     markers = data["markers"]
+#     try:
+#         # Convert marker list to JSON string
+#         field_line = json.dumps(markers)
 
-@app.route('/polygon', methods=['GET'])
+#         # Create and save the Field instance
+#         new_field = Field(field_line=field_line)
+#         db.session.add(new_field)
+#         db.session.commit()
+
+#         # Update field_name to match the auto-generated id
+#         new_field.field_name = str(new_field.id)
+#         db.session.commit()
+
+#         return jsonify({
+#             "message": "Field saved successfully",
+#             "field_id": new_field.id,
+#             "field_name": new_field.field_name,
+#             "field_line": markers,
+#         }), 200
+
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({"error": str(e)}), 500
+fields = [] # 노지이름, 노지 좌표
+
+saved_polygons = [] # 폴리곤 좌표 리스트 (임시 2차원 리스트로 저장중)
+@app.route('/polygon', methods=['GET'])  # 폴리곤 화면 출력
 def polygon():
     return render_template(for_test+'polygon.html')
 
-saved_polygon = [] # 폴리곤 좌표값 json 형태로 저장
-@app.route("/save-polygon", methods=["POST"]) # polygon 받아오기
-def save_polygon():
-    global saved_polygon
+@app.route("/save-field", methods=["POST"])
+def save_field():
     data = request.get_json()
 
-    if not data or "polygon" not in data:
+    if not data or "name" not in data or "polygon" not in data:
         return jsonify({"error": "Invalid data format"}), 400
 
-    saved_polygon = data["polygon"]
-    print("Received polygon data:", saved_polygon)
+    fields.append(data)
+    print("Current fields:", fields)
+
+    return jsonify({"message": "Field saved successfully!", "fields": fields})
+    #     try:
+#         # Convert marker list to JSON string
+#         field_line = json.dumps(markers)
+
+#         # Create and save the Field instance
+#         new_field = Field(field_line=field_line)
+#         db.session.add(new_field)
+#         db.session.commit()
+
+#         # Update field_name to match the auto-generated id
+#         new_field.field_name = str(new_field.id)
+#         db.session.commit()
+
+#         return jsonify({
+#             "message": "Field saved successfully",
+#             "field_id": new_field.id,
+#             "field_name": new_field.field_name,
+#             "field_line": markers,
+#         }), 200
+
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({"error": str(e)}), 500
 
     return jsonify({"message": "Polygon saved successfully!"})
 
-
-# @app.route('/save_marker', methods=['POST'])
-# def save_marker():
-#     data = request.get_json()
-#     lat = data.get('lat')
-#     lng = data.get('lng')
-#     print(f"Received marker data - Latitude: {lat}, Longitude: {lng}")
-#     return jsonify({"message": "Marker data received", "lat": lat, "lng": lng})
-
-# @app.route('/save_way', methods=['POST'])
-# def save_way():
-#     data = request.get_json()
-#     marker_data = data.get('markerData')
-#     print("Received path data:", marker_data)
-#     return jsonify({"message": "Path data received", "path": marker_data})
-
-# @app.route('/save_polygon', methods=['POST'])
-# def save_polygon():
-#     data = request.get_json()
-#     polygon_data = data.get('polygonData')
-#     print("Received polygon data:", polygon_data)
-#     return jsonify({"message": "Polygon data received", "polygon": polygon_data})
-
-# # 마커 데이터 저장 (DB 제외하고 출력만)
-# @app.route('/add_marker', methods=['POST'])
-# def add_marker():
-#     data = request.get_json()
-#     lat = data['lat']
-#     lng = data['lng']
-    
-#     # 서버 터미널에 출력
-#     print(f"Marker added - Latitude: {lat}, Longitude: {lng}")
-    
-#     return jsonify({'message': 'Marker added successfully!'})
-
-# # 다각형 데이터 저장 (DB 제외하고 출력만)
-# @app.route('/save_polygon', methods=['POST'])
-# def save_polygon():
-#     data = request.get_json()
-#     path = data['path']  # 다각형의 좌표 리스트
-    
-#     # 서버 터미널에 출력
-#     print(f"Polygon saved - Path: {path}")
-    
-#     return jsonify({'message': 'Polygon saved successfully!'})
-
-# # 마커 데이터 조회 (DB 제외하고 출력만)
-# @app.route('/get_markers', methods=['GET'])
-# def get_markers():
-#     # 예시로 몇 개의 마커를 출력
-#     markers = [
-#         {'lat': 33.450701, 'lng': 126.570667},
-#         {'lat': 33.451701, 'lng': 126.571667}
-#     ]
-    
-#     # 서버 터미널에 출력
-#     print(f"Markers retrieved: {markers}")
-    
-#     return jsonify(markers)
-
-# # 다각형 데이터 조회 (DB 제외하고 출력만)
-# @app.route('/get_polygons', methods=['GET'])
-# def get_polygons():
-#     # 예시로 몇 개의 다각형을 출력
-#     polygons = [
-#         {'path': [{'lat': 33.450701, 'lng': 126.570667}, {'lat': 33.451701, 'lng': 126.571667}]}
-#     ]
-    
-#     # 서버 터미널에 출력
-#     print(f"Polygons retrieved: {polygons}")
-    
-#     return jsonify(polygons)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000, debug=True)
