@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>얼리버드 스마트팜</title>
+  <link rel="stylesheet" href="main.css">
+  <!-- <script src="main.js"></script> -->
+</head>
+<body>
+  <div class="main-container">
+    <!-- 헤더 -->
+    <header class="header">
+      <h1>얼리버드</h1>
+    </header>
+    
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <button class="toggle-button">사이드바 열기/닫기</button>
+      <div class="content">
+        <p>노지 선택</p>
+        <p>관련 정보 표시</p>
+      </div>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+      <div class="left-panel">
+        <section class="weather">
+          <h2>날씨</h2>
+          <p>날씨 정보 표시</p>
+        </section>
+        <section class="todo-list">
+          <h2>TODO 리스트</h2>
+          <button id="add-task-btn" class="add-task-btn">할 일 추가</button>
+          <p>스케줄 및 작업 표시</p>
+        </section>
+      </div>
+      <div class="right-panel">
+        <section class="calendar">
+          <h2>캘린더</h2>
+          <p>캘린더 API 연동</p>
+        </section>
+        <section class="image-gallery">
+          <h3>시계열 데이터</h3>
+          <div class="gallery-container">
+            <img src="image1.jpg" alt="이미지 1">
+            <img src="image2.jpg" alt="이미지 2">
+            <img src="image3.jpg" alt="이미지 3">
+            <img src="image4.jpg" alt="이미지 4">
+            <img src="image5.jpg" alt="이미지 5">
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- 모달 -->
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>할 일 모달창</h2>
+      <div class="task-info">
+        <input type="text" placeholder="할 일 이름" class="task-name">
+        <input type="date" class="task-start-date">
+        <input type="number" placeholder="할 일 기간 (일)" class="task-duration">
+        <textarea placeholder="할 일 내용" class="task-details"></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button id="save-task-btn" class="btn">저장</button>
+        <button id="close-modal-btn" class="btn">닫기</button>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

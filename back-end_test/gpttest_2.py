@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import dotenv
 import os
+# db에 추가가능하도록 정제하는 테스트
 
 # # OpenAI API 키 설정
 # openai.api_key = 

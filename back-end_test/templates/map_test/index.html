@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    /* 모달 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 800px;
+      height: 90%;
+      position: relative;
+    }
+    .modal-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #FF0000;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      background-color: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Index Page</h1>
+    <button class="btn" onclick="openModal()">노지 추가</button>
+  </div>
+
+  <!-- 모달 -->
+  <div class="modal" id="polygonModal">
+    <div class="modal-content">
+      <iframe id="modalIframe" src=""></iframe>
+      <button class="close-btn" onclick="closeModal()">닫기</button>
+    </div>
+  </div>
+
+  <script>
+    const poly_modal = document.getElementById('polygonModal');
+    const iframe = document.getElementById('modalIframe');
+
+    function openModal() {
+      iframe.src = "/polygon"; // polygon 모달창
+      poly_modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      iframe.src = ""; // 초기화
+      poly_modal.style.display = "none";
+    }
+
+    // 모달 외부 클릭 시 닫기
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+</body>
+</html>

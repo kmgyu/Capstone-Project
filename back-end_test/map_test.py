@@ -20,28 +20,21 @@ db = SQLAlchemy(app)
 
 for_test = 'map_test/'
 
+
+# 노지 db 연동
+class field_info(db.Model, ):
+    field_id = db.Column(db.Integer, primary_key=True)
+    lat_arr = db.Column(db.String(), unique=True, nullable=False)
+    lng_arr = db.Column(db.String(), unique=True, nullable=False)
+    field_address = db.Column(db.String(), unique=True, nullable=False) 
+    crop_name = db.Column(db.String(), unique=True, nullable=False)
 # 메인 페이지 (HTML 렌더링)
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template(for_test+'map_gps.html')
+    return render_template(for_test + "index.html")
 
-@app.route('/move', methods=['GET'])
-def move():
-    return render_template(for_test+'move_way.html')
 
-@app.route("/save-markers", methods=["POST"]) # move-markers 좌표값 받아오기
-def save_markers():
-    global saved_markers
-    data = request.get_json()
-
-    if not data or "markers" not in data:
-        return jsonify({"error": "Invalid data format"}), 400
-
-    # 마커 데이터를 서버에 저장
-    saved_markers = data["markers"]
-    print("Received marker data:", saved_markers)
-
-    return jsonify({"message": "Markers saved successfully", "savedMarkers": saved_markers})
 fields = [] # 노지이름, 노지 좌표
 
 saved_polygons = [] # 폴리곤 좌표 리스트 (임시 2차원 리스트로 저장중)
@@ -59,9 +52,7 @@ def save_field():
     fields.append(data)
     print("Current fields:", fields)
 
-    return jsonify({"message": "Field saved successfully!", "fields": fields})
-
-    return jsonify({"message": "Polygon saved successfully!"})
+    return jsonify({"message": "Field save", "fields": fields})
 
 
 if __name__ == '__main__':

@@ -1,0 +1,232 @@
+/* 기본 스타일 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  line-height: 1.6;
+}
+
+/* 메인 레이아웃 */
+.main-container {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main main";
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 300px 1fr 2fr;
+  height: 100vh;
+}
+
+/* 헤더 스타일 */
+.header {
+  grid-area: header;
+  background-color: #2a9d8f;
+  color: white;
+  text-align: left;
+  padding: 10px 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+  grid-area: sidebar;
+  background-color: #264653;
+  color: white;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar .toggle-button {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #e76f51;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar .toggle-button:hover {
+  background-color: #d35445;
+}
+
+.sidebar .content {
+  margin-top: 20px;
+}
+
+/* 메인 콘텐츠 영역 */
+.main-content {
+  grid-area: main;
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* 왼쪽 패널 */
+.left-panel, .right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.left-panel {
+  width: 40%;
+}
+
+.right-panel {
+  width: 60%;
+}
+
+/* 카드 스타일 */
+.weather, .todo-list, .calendar, .photo-gallery {
+  background-color: #f1faee;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.todo-list {
+  background-color: #f1faee;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: 75%;
+  position: relative; /* 버튼의 위치를 기준으로 함 */
+}
+
+.add-task-btn {
+  position: absolute;
+  bottom: 20px; /* TODO 리스트 섹션의 아래에서 20px 띄움 */
+  right: 20px; /* 오른쪽에서 20px 띄움 */
+  background-color: #2a9d8f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.add-task-btn:hover {
+  background-color: #21867a;
+}
+
+/* 캘린더 */
+.calendar {
+  flex-grow: 1;
+  background-color: #a8dadc;
+}
+
+/* 이미지 갤러리 */
+.image-gallery {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: 200px;
+  overflow-y: scroll;
+}
+
+.gallery-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.gallery-container img {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* 사진 관리 */
+.photo-gallery .photo-controls {
+  margin-bottom: 20px;
+}
+
+.photo-gallery .photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.photo-gallery .photo-grid img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* 숨김 초기 상태 */
+.hidden {
+  display: none;
+}
+
+/* 모달 기본 스타일 */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+  z-index: 1000;
+  width: 400px;
+  max-width: 90%;
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 입력 필드 스타일 */
+.task-info input,
+.task-info textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* 버튼 컨테이너 스타일 */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 버튼 스타일 */
+.btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
