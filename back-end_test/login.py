@@ -39,7 +39,7 @@ def load_user(user_id):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
+    if request.method =='POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
