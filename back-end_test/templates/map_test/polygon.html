@@ -157,7 +157,7 @@
       fetch("/save-field", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fieldData),
+        body: JSON.stringify({fieldData, field_address: "sample address", crop_name: "sample name"}),
       })
         .then(response => response.json())
         .then(data => {
@@ -168,6 +168,11 @@
           console.error("Error saving field:", error);
         });
     }
+    window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+    };
 
     window.onload = initMap;
   </script>

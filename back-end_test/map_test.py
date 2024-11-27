@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import dotenv
 import os
+import json
+from datetime import date
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -14,7 +16,9 @@ dotenv.load_dotenv()
 DATABASE_URI=os.environ.get('DATABASE_URI')
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
@@ -22,38 +26,63 @@ for_test = 'map_test/'
 
 
 # 노지 db 연동
-class field_info(db.Model, ):
-    field_id = db.Column(db.Integer, primary_key=True)
-    lat_arr = db.Column(db.String(), unique=True, nullable=False)
-    lng_arr = db.Column(db.String(), unique=True, nullable=False)
-    field_address = db.Column(db.String(), unique=True, nullable=False) 
-    crop_name = db.Column(db.String(), unique=True, nullable=False)
-# 메인 페이지 (HTML 렌더링)
+class FieldInfo(db.Model):
+    __tablename__ = 'field_info'
+    field_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    lat_arr = db.Column(db.Text, nullable=False)
+    lng_arr = db.Column(db.Text, nullable=False)
+    # field_address = db.Column(db.String(255), nullable=False)
+    # crop_name = db.Column(db.String(255), nullable=False)
+    # field_area = db.Column(db.Float, nullable=False, default=0.0)
+    # farm_startdate = db.Column(db.Date, nullable=False, default=date.today)
 
-@app.route("/")
+
+
+@app.route('/')
 def index():
-    return render_template(for_test + "index.html")
+    return render_template(for_test + 'index.html')
 
-
-fields = [] # 노지이름, 노지 좌표
-
-saved_polygons = [] # 폴리곤 좌표 리스트 (임시 2차원 리스트로 저장중)
-@app.route('/polygon', methods=['GET'])  # 폴리곤 화면 출력
+@app.route('/polygon')
 def polygon():
-    return render_template(for_test+'polygon.html')
+    return render_template(for_test +'polygon.html')
 
-@app.route("/save-field", methods=["POST"])
+@app.route('/view_field', methods=['GET', 'POST'])
+def view_field():
+    fields = FieldInfo.query.all()  # 데이터베이스에서 필드 정보를 가져옴
+    field_data = [
+        {
+            'field_id': field.field_id,
+            'lat_arr': json.loads(field.lat_arr),
+            'lng_arr': json.loads(field.lng_arr),
+        }
+        for field in fields
+    ]
+    return render_template(for_test + 'view_field.html', fields=field_data)
+
+@app.route('/save-field', methods=['POST'])
 def save_field():
+    # 요청 데이터
     data = request.get_json()
 
-    if not data or "name" not in data or "polygon" not in data:
-        return jsonify({"error": "Invalid data format"}), 400
+    field_data = data['fieldData'] # 위도 경도 저장
+    field_id = field_data['name']  # 필드 id, 노지 입력란으로 일단 해둠
+    # 위도, 경도 배열 추출
+    lat_arr = json.dumps([point['lat'] for point in field_data['polygon']])
+    lng_arr = json.dumps([point['lng'] for point in field_data['polygon']])
 
-    fields.append(data)
-    print("Current fields:", fields)
+    # 새 필드 생성 및 DB 저장
+    field = FieldInfo(
+        field_id=field_id,
+        lat_arr=lat_arr,
+        lng_arr=lng_arr,
+    )
+    db.session.add(field)
+    db.session.commit()
 
-    return jsonify({"message": "Field save", "fields": fields})
+    return jsonify({"message": "Field saved successfully!"}), 200
+
 
 
 if __name__ == '__main__':
+    # http://orion.mokpo.ac.kr:8483/
     app.run(host='0.0.0.0', port=3000, debug=True)
