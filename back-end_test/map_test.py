@@ -29,12 +29,14 @@ for_test = 'map_test/'
 class FieldInfo(db.Model):
     __tablename__ = 'field_info'
     field_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    field_name = db.Column(db.String(255), nullable=False)
     lat_arr = db.Column(db.Text, nullable=False)
     lng_arr = db.Column(db.Text, nullable=False)
-    # field_address = db.Column(db.String(255), nullable=False)
-    # crop_name = db.Column(db.String(255), nullable=False)
-    # field_area = db.Column(db.Float, nullable=False, default=0.0)
-    # farm_startdate = db.Column(db.Date, nullable=False, default=date.today)
+    # 아래는 수정 더미데이터들
+    field_address = db.Column(db.String(255), default='mokpo, 임시 값이다.')
+    crop_name = db.Column(db.String(255), default='상추, 임시값이다.')
+    field_area = db.Column(db.Float, default=0.0)
+    farm_startdate = db.Column(db.Date, default=date.today)
 
 
 
@@ -52,8 +54,7 @@ def view_field():
     field_data = [
         {
             'field_id': field.field_id,
-            'lat_arr': json.loads(field.lat_arr),
-            'lng_arr': json.loads(field.lng_arr),
+            'coordinate': zip(json.loads(field.lat_arr), json.loads(field.lng_arr)),
         }
         for field in fields
     ]
@@ -72,7 +73,7 @@ def save_field():
 
     # 새 필드 생성 및 DB 저장
     field = FieldInfo(
-        field_id=field_id,
+        field_name=field_id,
         lat_arr=lat_arr,
         lng_arr=lng_arr,
     )
