@@ -51,8 +51,10 @@
       {% for field in fields %}
       <li class="field-item">
         <h3>Field ID: {{ field.field_id }}</h3>
-        <p><strong>위도 배열:</strong> {{ field.lat_arr }}</p>
-        <p><strong>경도 배열:</strong> {{ field.lng_arr }}</p>
+        {% for lat, lng in field.coordinate %}
+          <p><strong>위도 배열:</strong> {{ lat }}</p>
+          <p><strong>경도 배열:</strong> {{ lng }}</p>
+        {% endfor %}
       </li>
       {% endfor %}
     </ul>

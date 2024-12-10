@@ -54,8 +54,7 @@ def view_field():
     field_data = [
         {
             'field_id': field.field_id,
-            'lat_arr': json.loads(field.lat_arr),
-            'lng_arr': json.loads(field.lng_arr),
+            'coordinate': zip(json.loads(field.lat_arr), json.loads(field.lng_arr)),
         }
         for field in fields
     ]
