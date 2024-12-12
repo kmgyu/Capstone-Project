@@ -25,19 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sidebar = document.querySelector(".sidebar"); // 사이드바 요소
     const toggleButton = document.querySelector(".toggle-sidebar"); // 토글 버튼
-    const mainContainer = document.querySelector('.container'); // 메인 컨테이너
 
     // 초기 상태 아이콘 설정
     toggleButton.innerHTML = '<span>&gt;</span>'; // 닫힌 상태일 때 표시
 
-    // 토글 버튼 클릭 이벤트
     toggleButton.addEventListener("click", () => {
-        const isExpanded = sidebar.classList.toggle("expanded"); // expanded 상태 변경
-        toggleButton.innerHTML = `<span>${isExpanded ? '&lt;' : '&gt;'}</span>`; // 아이콘 변경
-
-        // 사이드바 숨김 상태 처리 (너비 변경)
-        sidebar.style.width = isExpanded ? "200px" : "70px"; // 확장 시 200px, 축소 시 70px
-        toggleButton.style.right = isExpanded ? "-15px" : "-15px"; // 버튼 위치는 고정
+        const isExpanded = sidebar.classList.toggle("expanded"); // 상태 토글
+        toggleButton.innerHTML = isExpanded ? "&lt;" : "&gt;"; // 버튼 아이콘 변경
     });
 
     const calendarEl = document.getElementById('calendar');
