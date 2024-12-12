@@ -191,4 +191,14 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("캘린더 요소를 찾을 수 없습니다.");
     }
+
+    const calendarAddTaskBtn = document.getElementById('add-calendar-task-btn'); // 캘린더 모달의 "할 일 추가" 버튼
+    // "할 일 추가" 버튼 클릭 이벤트
+    calendarAddTaskBtn.addEventListener('click', () => {    
+        taskModal.classList.remove('hidden'); // task-modal 표시
+        const taskStartDateInput = document.querySelector('.task-start-date');
+        if (taskStartDateInput && selectedDate) {
+            taskStartDateInput.value = selectedDate; // 선택된 날짜 설정
+        }
+    });
 });
