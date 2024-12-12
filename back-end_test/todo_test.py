@@ -33,7 +33,7 @@ class FieldTodo(db.Model):
     # 아래는 수정 더미데이터들
     cycle = db.Column(db.Integer, default=1)
     start_date = db.Column(db.TIMESTAMP, default=func.now())  # 기본값: 현재 시간
-    period = db.Column(db.Integer, default='상추, 임시값이다.')
+    period = db.Column(db.Integer, default=0)
 
 @app.route('/')
 def index():
@@ -43,23 +43,25 @@ def index():
 def add_field_todo():
     # 요청 데이터
     data = request.get_json()
+    if not data or 'taskName' not in data or 'taskContent' not in data:
+        return jsonify({"error": "Invalid input data"}), 400
 
-    field_data = data['fieldData'] # 위도 경도 저장
-    field_id = field_data['name']  # 필드 id, 노지 입력란으로 일단 해둠
-    # 위도, 경도 배열 추출
-    lat_arr = json.dumps([point['lat'] for point in field_data['polygon']])
-    lng_arr = json.dumps([point['lng'] for point in field_data['polygon']])
+    task_name = data['taskName']  # 작업 이름
+    task_content = data['taskContent']  # 작업 내용
+    cycle = data.get('cycle', 1)  # 주기 (기본값: 1)
+    period = data.get('period', 0)  # 기간 (기본값: 0)
 
-    # 새 필드 생성 및 DB 저장
-    field = FieldTodo(
-        field_name=field_id,
-        lat_arr=lat_arr,
-        lng_arr=lng_arr,
+    # 새 작업 생성 및 DB 저장
+    task = FieldTodo(
+        task_name=task_name,
+        task_content=task_content,
+        cycle=cycle,
+        period=period
     )
-    db.session.add(field)
+    db.session.add(task)
     db.session.commit()
 
-    return jsonify({"message": "Field saved successfully!"}), 200
+    return jsonify({"message": "Task saved successfully!", "taskId": task.task_id}), 200
 
 if __name__ == '__main__':
     # http://orion.mokpo.ac.kr:8483/
