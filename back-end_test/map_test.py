@@ -48,7 +48,7 @@ def index():
 def polygon():
     return render_template(for_test +'polygon.html')
 
-@app.route('/view_field', methods=['GET', 'POST'])
+@app.route('/view-field', methods=['GET', 'POST'])
 def view_field():
     fields = FieldInfo.query.all()  # 데이터베이스에서 필드 정보를 가져옴
     field_data = [

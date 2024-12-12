@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 import dotenv
 import os
 import json
@@ -22,20 +23,45 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 # 노지 db 연동
 class FieldTodo(db.Model):
     __tablename__ = 'field_info'
-    field_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    field_name = db.Column(db.String(255), nullable=False)
-    lat_arr = db.Column(db.Text, nullable=False)
-    lng_arr = db.Column(db.Text, nullable=False)
+    task_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    task_name = db.Column(db.String(255), nullable=False)
+    task_content = db.Column(db.Text, nullable=False)
     # 아래는 수정 더미데이터들
-    field_address = db.Column(db.String(255), default='mokpo, 임시 값이다.')
-    crop_name = db.Column(db.String(255), default='상추, 임시값이다.')
-    field_area = db.Column(db.Float, default=0.0)
-    farm_startdate = db.Column(db.Date, default=date.today)
+    cycle = db.Column(db.Integer, default=1)
+    start_date = db.Column(db.TIMESTAMP, default=func.now())  # 기본값: 현재 시간
+    period = db.Column(db.Integer, default=0)
 
+@app.route('/')
+def index():
+    return render_template('main.html')
 
+@app.route('/add-field-todo', methods=['GET', 'POST'])
+def add_field_todo():
+    # 요청 데이터
+    data = request.get_json()
+    if not data or 'taskName' not in data or 'taskContent' not in data:
+        return jsonify({"error": "Invalid input data"}), 400
+
+    task_name = data['taskName']  # 작업 이름
+    task_content = data['taskContent']  # 작업 내용
+    # cycle = data.get('cycle', 1)  # 주기 (기본값: 1)
+    # period = data.get('period', 0)  # 기간 (기본값: 0)
+
+    # 새 작업 생성 및 DB 저장
+    task = FieldTodo(
+        task_name=task_name,
+        task_content=task_content,
+        # cycle=cycle,
+        # period=period
+    )
+    db.session.add(task)
+    db.session.commit()
+
+    return jsonify({"message": "Task saved successfully!", "taskId": task.task_id}), 200
 
 if __name__ == '__main__':
     # http://orion.mokpo.ac.kr:8483/
