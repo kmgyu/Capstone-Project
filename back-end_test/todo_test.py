@@ -39,7 +39,7 @@ class FieldTodo(db.Model):
 def index():
     return render_template('main.html')
 
-@app.route('/add-field-todo', methods=['GET', 'POST'])
+@app.route('/add-field-todo', methods=['POST'])
 def add_field_todo():
     # 요청 데이터
     data = request.get_json()
@@ -62,6 +62,22 @@ def add_field_todo():
     db.session.commit()
 
     return jsonify({"message": "Task saved successfully!", "taskId": task.task_id}), 200
+
+@app.route('/get-field-todo', methods=['GET'])
+def get_field_todo():
+    tasks = FieldTodo.query.all()
+    task_data = [
+        {
+            'taskId': task.task_id,
+            'taskName': task.task_name,
+            'taskContent': task.task_content,
+            'cycle': task.cycle,
+            'startDate': task.start_date,
+            'period': task.period
+        }
+        for task in tasks
+    ]
+    return jsonify(task_data), 200
 
 if __name__ == '__main__':
     # http://orion.mokpo.ac.kr:8483/
