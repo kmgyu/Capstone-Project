@@ -48,15 +48,15 @@ def add_field_todo():
 
     task_name = data['taskName']  # 작업 이름
     task_content = data['taskContent']  # 작업 내용
-    cycle = data.get('cycle', 1)  # 주기 (기본값: 1)
-    period = data.get('period', 0)  # 기간 (기본값: 0)
+    # cycle = data.get('cycle', 1)  # 주기 (기본값: 1)
+    # period = data.get('period', 0)  # 기간 (기본값: 0)
 
     # 새 작업 생성 및 DB 저장
     task = FieldTodo(
         task_name=task_name,
         task_content=task_content,
-        cycle=cycle,
-        period=period
+        # cycle=cycle,
+        # period=period
     )
     db.session.add(task)
     db.session.commit()
