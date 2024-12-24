@@ -42,7 +42,10 @@ def index():
 @app.route('/add-field-todo', methods=['POST'])
 def add_field_todo():
     # 요청 데이터
+
+    # 어떤 놈이 짰는지 정말 잘짰구나. GET 요청에서도 json을 요청하네 jsonify인데 왜 GET이 들어가있는거야
     data = request.get_json()
+    
     if not data or 'taskName' not in data or 'taskContent' not in data:
         return jsonify({"error": "Invalid input data"}), 400
 
