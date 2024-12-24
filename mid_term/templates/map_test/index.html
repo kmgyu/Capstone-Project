@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    /* 모달 배경 스타일 */
+    .modal {
+      display: none; /* 기본적으로 보이지 않음 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* 다른 요소 위에 표시되도록 */
+    }
+     /* 모달 콘텐츠 스타일 */
+     .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Index Page</h1>
+    <button class="btn" onclick="openModal()">노지 추가</button>
+    <button class="btn" onclick="openView()">노지 보기</button>
+  </div>
+
+  <!-- 모달 -->
+  <div class="modal" id="polygonModal">
+    <div class="modal-content">
+      <iframe id="modalIframe" src=""></iframe>
+    </div>
+  </div>
+  <div class="modal" id="ViewModal">
+    <div class="modal-content">
+      <iframe id="modalIframe" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    const poly_modal = document.getElementById('polygonModal');
+    const view_modal = document.getElementById('ViewModal');
+    const iframe = document.getElementById('modalIframe');
+
+    // 노지 추가 모달 열기
+    function openModal() {
+      iframe.src = "/polygon";  // polygon 모달창
+      poly_modal.style.display = "flex";
+    }
+
+    // 노지 보기 모달 열기
+    function openView() {
+      iframe.src = "/view_field";  // view_field 모달창
+      view_modal.style.display = "flex";
+    }
+
+    // 모달 닫기
+    function closeModal() {
+      iframe.src = "";  // 초기화하여 iframe 내용 지우기
+      poly_modal.style.display = "none";
+    }
+
+    // 모달 닫기
+    function closeView() {
+      iframe.src = "";  // 초기화하여 iframe 내용 지우기
+      view_modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == poly_modal || event.target == view_modal) {  // poly_modal 또는 view_modal을 클릭하면 모달을 닫음
+        closeModal();
+        closeView();
+      }
+    };
+  </script>
+</body>
+</html>
