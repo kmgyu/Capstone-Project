@@ -18,8 +18,26 @@ def index():
 
     반환값:
     - index.html 템플릿 렌더링.
+    
+    주의 : view-field를 include함.
     """
-    return render_template(template_path + 'index.html')
+    
+    # 데이터베이스에서 모든 필드 정보 가져오기
+    fields = FieldInfo.query.all()
+    field_data = [
+        {
+            'field_id': field.field_id,
+            'field_name': field.field_name,
+            'field_address': field.field_address,
+            'crop_name': field.crop_name,
+            'field_area': field.field_area,
+            'farm_startdate': field.farm_startdate,
+            'coordinate': list(zip(json.loads(field.lat_arr), json.loads(field.lng_arr))),
+        }
+        for field in fields
+    ]
+    
+    return render_template(template_path + 'index.html',  fields=field_data)
 
 @field_views.route('/polygon')
 def polygon():

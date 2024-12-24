@@ -14,7 +14,7 @@ bcrypt = Bcrypt()
 
 # User model
 class Userinfo(db.Model, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = 'userinfo'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)

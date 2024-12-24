@@ -154,7 +154,7 @@
         polygon: polygonData,
       };
 
-      fetch("/save-field", {
+      fetch("/field/save-field", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({fieldData, field_address: "sample address", crop_name: "sample name"}),

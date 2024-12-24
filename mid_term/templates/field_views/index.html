@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    
+  /* 모달 배경 */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 모달을 다른 요소보다 위에 표시 */
+    visibility: hidden; /* 기본적으로 숨김 처리 */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease-in-out; /* 부드러운 전환 */
+  }
+
+  /* 모달 컨텐츠 */
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+
+  /* 모달 활성화 */
+  .modal.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
+  /* 닫기 버튼 스타일 */
+  .close-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h1>Index Page</h1>
+    <!-- 노지 추가 버튼 -->
+    <button class="btn btn-primary" onclick="openModal('polygonModal')">노지 추가</button>
+    <!-- 노지 보기 버튼 -->
+    <button class="btn btn-secondary" onclick="openModal('viewModal')">노지 보기</button>
+  </div>
+
+<!-- 노지 추가 모달 -->
+<div class="modal" id="polygonModal">
+  <div class="modal-content">
+    <h3>노지 추가</h3>
+    <iframe id="modalIframe" src="/field/polygon"></iframe>
+    <!-- {% include "field_views/polygon.html" %} -->
+    <button class="close-btn" onclick="closeModal('polygonModal')">닫기</button>
+  </div>
+</div>
+
+<!-- 노지 보기 모달 -->
+<div class="modal" id="viewModal">
+  <div class="modal-content">
+    <h3>노지 보기</h3>
+    {% include "field_views/view_field.html" %}
+    <button class="close-btn" onclick="closeModal('viewModal')">닫기</button>
+  </div>
+</div>
+
+<script>
+  // 모달 열기
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.add('show');
+  }
+
+  // 모달 닫기
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('show');
+  }
+
+  // 모달 외부 클릭 시 닫기
+  window.onclick = function (event) {
+    if (event.target.classList.contains('modal')) {
+      closeModal(event.target.id);
+    }
+  };
+</script>
+</body>
+</html>
+
+
+
