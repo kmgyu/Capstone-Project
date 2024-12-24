@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kakao Map Marker Placement</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2b666ceb7cbc80f27663baeee640e9fd"></script>
+  <style>
+    #map {
+      width: 100%;
+      height: 450px;
+    }
+    #controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    #markerList {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div id="controls">
+    <label>
+      위도: <input type="number" id="latitude" placeholder="위도 입력">
+    </label>
+    <label>
+      경도: <input type="number" id="longitude" placeholder="경도 입력">
+    </label>
+    <button onclick="addMarker()">마커 추가</button>
+    <button onclick="clearMarkers()">마커 초기화</button>
+  </div>
+
+  <div id="markerList">
+    <h3>마커 리스트:</h3>
+    <ul id="markerItems"></ul>
+  </div>
+
+  <script>
+    let map;
+    let markers = [];
+    let markerData = JSON.parse(localStorage.getItem("markerData")) || [];
+    // kakao 객체가 정상적으로 로드되었을 때만 실행하도록 하는 방법
+    window.onload = function() {
+      // 카카오 맵 API가 로드되고 나서 실행되는 코드
+      initMap(); // 지도를 초기화하는 함수 호출
+    };
+    function initMap() {
+      map = new kakao.maps.Map(document.getElementById("map"), {
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3
+      });
+
+      // 저장된 마커가 있으면 지도에 표시
+      markerData.forEach((data, index) => {
+        const marker = createMarker(data.lat, data.lng);
+        markers.push(marker);
+        addMarkerToList(index, data.lat, data.lng);
+      });
+    }
+
+    // 위도와 경도를 입력받아 마커를 지도에 추가
+    function addMarker() {
+      const latInput = document.getElementById("latitude");
+      const lngInput = document.getElementById("longitude");
+
+      const lat = parseFloat(latInput.value);
+      const lng = parseFloat(lngInput.value);
+
+      if (isNaN(lat) || isNaN(lng)) {
+        alert("올바른 위도와 경도를 입력하세요.");
+        return;
+      }
+
+      const marker = createMarker(lat, lng);
+      markers.push(marker);
+      markerData.push({ lat, lng });
+      localStorage.setItem("markerData", JSON.stringify(markerData));
+
+      addMarkerToList(markerData.length - 1, lat, lng);
+
+      // 입력 필드 초기화
+      latInput.value = "";
+      lngInput.value = "";
+    }
+
+    // 마커 생성 및 지도에 표시
+    function createMarker(lat, lng) {
+      return new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(lat, lng)
+      });
+    }
+
+    // 마커 리스트에 추가
+    function addMarkerToList(index, lat, lng) {
+      const markerItems = document.getElementById("markerItems");
+      const listItem = document.createElement("li");
+      listItem.textContent = `마커 ${index + 1}: 위도 ${lat}, 경도 ${lng}`;
+
+      const viewButton = document.createElement("button");
+      viewButton.textContent = "보기";
+      viewButton.onclick = () => {
+        map.setCenter(new kakao.maps.LatLng(lat, lng));
+      };
+
+      listItem.appendChild(viewButton);
+      markerItems.appendChild(listItem);
+    }
+
+    // 모든 마커 초기화
+    function clearMarkers() {
+      markers.forEach(marker => marker.setMap(null));
+      markers = [];
+      markerData = [];
+      localStorage.removeItem("markerData");
+
+      const markerItems = document.getElementById("markerItems");
+      markerItems.innerHTML = "";
+
+      alert("모든 마커가 초기화되었습니다.");
+    }
+
+    // 지도 초기화
+    window.onload = initMap;
+  </script>
+
+</body>
+</html>
