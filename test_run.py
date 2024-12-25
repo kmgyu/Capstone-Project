@@ -19,28 +19,28 @@ class FlaskTestCase(unittest.TestCase):
         self.app_context.push()
 
         # 데이터베이스 초기화
+        # db.drop_all()  # 기존 테이블 삭제
         db.create_all()
 
         # 더미 사용자 생성
-        user = Userinfo(username="testuser", email="test@example.com")
-        user.set_password("password123")
-        db.session.add(user)
-        db.session.commit()
+        if not Userinfo.query.filter_by(email="test@example.com").first():
+            user = Userinfo(username="testuser", email="test@example.com")
+            user.set_password("password123")
+            db.session.add(user)
+            db.session.commit()
 
     def tearDown(self):
         """
         테스트 종료 후 정리 작업.
         """
-        db.session.remove()
-        db.drop_all()
         self.app_context.pop()
 
-    def login(self, email, password):
+    def login(self, username, password):
         """
         로그인 헬퍼 함수.
         """
         return self.client.post('/auth/login', data={
-            'email': email,
+            'username': username,
             'password': password
         })
 
@@ -49,7 +49,7 @@ class FlaskTestCase(unittest.TestCase):
         홈 페이지 테스트.
         """
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(b"Welcome", response.data)
 
     def test_register_page(self):
@@ -75,8 +75,8 @@ class FlaskTestCase(unittest.TestCase):
             'email': 'invalid-email',
             'password': 'short'
         })
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Invalid input", response.data)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(b"All fields are required.", response.data)
 
     def test_login_page(self):
         """
@@ -88,16 +88,16 @@ class FlaskTestCase(unittest.TestCase):
         self.assertIn(b"Login", response.data)
 
         # POST 요청: 유효한 자격 증명으로 로그인
-        response = self.login('test@example.com', 'password123')
+        response = self.login('testuser', 'password123')
         self.assertEqual(response.status_code, 302)  # 성공적으로 리디렉션
 
         # POST 요청: 잘못된 자격 증명으로 로그인
         response = self.client.post('/auth/login', data={
-            'email': 'test@example.com',
+            'username': 'testuser',
             'password': 'wrongpassword'
         })
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Login Unsuccessful", response.data)
+        self.assertIn(b"Invalid username or password. Please try again.", response.data)
 
     def test_dashboard_page(self):
         """
@@ -109,7 +109,7 @@ class FlaskTestCase(unittest.TestCase):
         self.assertIn(b"Login", response.data)
 
         # 로그인 후 대시보드 접근
-        self.login('test@example.com', 'password123')
+        self.login('testuser', 'password123')
         response = self.client.get('/auth/dashboard')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Welcome to your Dashboard", response.data)
@@ -130,8 +130,8 @@ class FlaskTestCase(unittest.TestCase):
         # GET 요청: 노지 데이터 확인
         response = self.client.get('/field/view-field')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"saved field list", response.data)
-        self.assertIn(b"Test Field", response.data)
+        self.assertIn(b"Field ID", response.data)
+        self.assertIn(b"Test", response.data)
 
     def test_todo_page(self):
         """

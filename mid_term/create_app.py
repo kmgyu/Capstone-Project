@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from mid_term.models import db, bcrypt, Userinfo
@@ -27,6 +27,10 @@ def create_app(config_path='default_config.py'):
     @login_manager.user_loader
     def load_user(user_id):
         return Userinfo.query.get(int(user_id))  # 데이터베이스에서 사용자 ID로 사용자 로드
+
+    @app.route('/')
+    def index():
+        return redirect(url_for('auth.dashboard'))
 
     # Blueprint 등록
     app.register_blueprint(auth, url_prefix='/auth')
