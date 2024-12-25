@@ -28,6 +28,7 @@
 ---
 
 ## 프로젝트 구조
+```bash
 project/
 ├── mid_term/
 │   ├── static/
@@ -54,7 +55,7 @@ project/
 │   └── run.py
 ├── requirements.txt
 └── README.md
-
+```
 ## 설치 및 실행
 
 ### 1. 필수 요구 사항
@@ -112,7 +113,7 @@ SECRET_KEY=<your-secret-key>
 |사용자 회원가입|GET/POST|/auth/register|사용자 회원가입.
 |사용자 로그인|GET/POST|/auth/login|사용자 로그인.
 |대시보드|GET|/auth/dashboard|로그인된 사용자 대시보드.
-|노지 목록 조회|GET	/field/view-field|모든 노지 데이터 조회 및 시각화.
+|노지 목록 조회|GET|/field/view-field|모든 노지 데이터 조회 및 시각화.
 |노지 데이터 추가|POST|/field/save-field|새로운 노지 데이터 추가.
 |할 일 목록 조회|GET|/todo/get-field-todos|할 일 데이터 조회.
 |할 일 추가	POST|/todo/add-field-todo|새로운 할 일 추가.
@@ -143,4 +144,4 @@ Pull Request를 엽니다.
 이 프로젝트는 MIT License로 라이선스가 부여되었습니다.
 
 # 추가 정보
-버그 및 피드백은 [Issues](<repository-url>/issues)에 남겨주세요.
+버그 및 피드백은 [Issues](https://github.com/kmgyu/Capstone-Project/issues)에 남겨주세요.
