@@ -1,0 +1,83 @@
+/* 캘린더 스타일 */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-button {
+    background-color: var(--light-color);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.nav-button:hover {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.calendar-date {
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.calendar-date:hover {
+    background-color: var(--light-color);
+}
+
+.calendar-date.today {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+.calendar-date.has-event::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    margin: 3px auto 0;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .calendar-grid {
+        gap: 5px;
+    }
+    
+    .calendar-date {
+        padding: 5px;
+        font-size: 14px;
+    }
+}

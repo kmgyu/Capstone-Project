@@ -1,0 +1,51 @@
+
+:root {
+    --primary-color: #4d8b31; /* 신뢰감을 주는 녹색 */
+    --secondary-color: #7db05c; /* 밝은 녹색 */
+    --accent-color: #f9a03f; /* 따뜻한 주황색 */
+    --dark-color: #36593c; /* 어두운 녹색 */
+    --light-color: #f4f7ed; /* 밝은 베이지 */
+    --text-color: #333333;
+    --white-color: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+body {
+    background-color: var(--light-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.main-content {
+    padding: 40px 0;
+}
+
+.section-title {
+    font-size: 24px;
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+/* 반응형 기본 스타일 */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
