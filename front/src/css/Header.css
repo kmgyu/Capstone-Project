@@ -97,7 +97,76 @@ header {
     cursor: pointer;
     color: var(--primary-color);
 }
+/* 사용자 드롭다운 메뉴 스타일 */
+.user-profile {
+    position: relative;
+    cursor: pointer;
+}
 
+.user-dropdown {
+position: absolute;
+top: calc(100% + 10px);
+right: 0;
+background-color: var(--white-color);
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+border-radius: 4px;
+min-width: 150px;
+z-index: 10;
+overflow: hidden;
+}
+
+.user-dropdown::before {
+content: '';
+position: absolute;
+top: -5px;
+right: 20px;
+width: 10px;
+height: 10px;
+background-color: var(--white-color);
+transform: rotate(45deg);
+box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.05);
+}
+
+.logout-button {
+display: block;
+width: 100%;
+padding: 10px 15px;
+text-align: left;
+background: none;
+border: none;
+color: var(--text-color);
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+background-color: rgba(0, 0, 0, 0.05);
+color: var(--primary-color);
+}
+
+.logout-button svg {
+margin-right: 8px;
+width: 16px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+.user-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-dropdown::before {
+    display: none;
+}
+
+.logout-button {
+    padding: 15px;
+}
+}
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .nav-menu {

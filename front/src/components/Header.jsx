@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   // faDrone, 
   faSun, 
   faUser, 
-  faBars 
+  faBars,
+  faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import '../css/Header.css';
 
-const Header = () => {
+const Header = ({ onLogout }) => {
+  const navigate = useNavigate();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [weatherInfo, setWeatherInfo] = useState({
     icon: faSun,
     description: '맑음',
@@ -18,6 +22,19 @@ const Header = () => {
 
   const toggleMobileMenu = () => {
     setShowMobileMenu(!showMobileMenu);
+  };
+
+  const toggleUserDropdown = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      // 로그아웃 함수 호출
+      onLogout && onLogout();
+      // 로그인 페이지로 이동
+      navigate('/login');
+    }
   };
 
   return (
@@ -47,11 +64,20 @@ const Header = () => {
             </span>
           </div>
           
-          <div className="user-profile">
+          <div className="user-profile" onClick={toggleUserDropdown}>
             <div className="user-avatar">
               <FontAwesomeIcon icon={faUser} />
             </div>
-            <span>테스터</span>
+            <span>관리자</span>
+            
+            {/* 사용자 드롭다운 메뉴 */}
+            {showUserDropdown && (
+              <div className="user-dropdown">
+                <button onClick={handleLogout} className="logout-button">
+                  <FontAwesomeIcon icon={faSignOutAlt} /> 로그아웃
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="hamburger-menu" onClick={toggleMobileMenu}>

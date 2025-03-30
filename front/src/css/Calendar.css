@@ -52,15 +52,18 @@
 }
 
 .calendar-date:hover {
+    text-align: center;
     background-color: var(--light-color);
 }
 
 .calendar-date.today {
+    text-align: center;
     background-color: var(--primary-color);
     color: var(--white-color);
 }
 
 .calendar-date.has-event::after {
+    text-align: center;
     content: '';
     display: block;
     width: 6px;
@@ -68,6 +71,12 @@
     background-color: var(--accent-color);
     border-radius: 50%;
     margin: 3px auto 0;
+}
+.calendar-day.other-month.prev-month-day {
+    text-align: center;
+}
+.calendar-day{
+    text-align: center;
 }
 
 /* 반응형 스타일 */
