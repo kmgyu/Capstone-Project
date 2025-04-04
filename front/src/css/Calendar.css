@@ -1,4 +1,5 @@
 /* 캘린더 스타일 */
+/* 헤더 및 네비게이션 */
 .calendar-header {
     display: flex;
     justify-content: space-between;
@@ -30,53 +31,149 @@
     color: var(--white-color);
 }
 
+/* 캘린더 그리드 */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 0; /* 간격 제거 */
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
+/* 요일 헤더 */
 .calendar-weekday {
     text-align: center;
     font-weight: 600;
-    margin-bottom: 10px;
+    padding-bottom: 5px;
     color: var(--dark-color);
 }
 
-.calendar-date {
-    text-align: center;
-    padding: 10px;
-    border-radius: 4px;
+/* 날짜 셀 */
+.calendar-day {
+    position: relative;
+    min-height: 80px;
+    padding: 5px;
     cursor: pointer;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e0e0e0;
+    overflow: visible; /* 내용이 셀을 넘어갈 수 있도록 */
+    text-align: center;
 }
 
-.calendar-date:hover {
-    text-align: center;
+.calendar-day:hover {
     background-color: var(--light-color);
 }
 
-.calendar-date.today {
-    text-align: center;
+.calendar-day.selected {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+.calendar-day.today {
     background-color: var(--primary-color);
     color: var(--white-color);
 }
 
-.calendar-date.has-event::after {
-    text-align: center;
-    content: '';
-    display: block;
+/* 이전/다음 달 날짜 */
+.calendar-day.other-month,
+.calendar-day.prev-month-day,
+.calendar-day.next-month-day {
+    color: #aaa; /* 회색 텍스트 */
+    opacity: 0.6; /* 약간 투명하게 */
+}
+
+/* 날짜 숫자 */
+.calendar-day-number {
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-align: right;
+    padding-right: 2px;
+}
+
+/* 이벤트 컨테이너 */
+.event-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    margin-top: 20px;
+    height: 100%;
+}
+
+/* 이벤트 점 표시 */
+.event-dots {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.event-dot {
     width: 6px;
     height: 6px;
-    background-color: var(--accent-color);
     border-radius: 50%;
-    margin: 3px auto 0;
+    margin-top: 2px;
 }
-.calendar-day.other-month.prev-month-day {
-    text-align: center;
+
+/* 이벤트 바 스타일 */
+.event-bar {
+    position: absolute;
+    height: 20px;
+    font-size: 11px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: white;
+    padding: 3px 5px;
+    z-index: 10;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
-.calendar-day{
-    text-align: center;
+
+.event-title {
+    font-weight: 500;
+}
+
+/* 이벤트 유형별 스타일 */
+.event-single {
+    border-radius: 3px;
+    width: 100%;
+    z-index: 11;
+}
+
+.event-start {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    width: calc(100%); /* 오른쪽 끝까지 */
+    margin-right: 0;
+    z-index: 11; /* 시작 부분이 가장 위에 */
+}
+
+.event-middle {
+    width: calc(100% + 1px); /* 양쪽으로 확장 */
+    margin-left: -1px;
+    margin-right: 0;
+    z-index: 10;
+    border-radius: 0;
+}
+
+.event-end {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    width: calc(100%);
+    margin-left: -1px;
+    z-index: 11; /* 끝 부분도 가장 위에 */
+}
+
+/* 이벤트 위치 */
+.event-position-0 {
+    top: 0;
+}
+
+.event-position-1 {
+    top: 25px;
 }
 
 /* 반응형 스타일 */
@@ -90,3 +187,54 @@
         font-size: 14px;
     }
 }
+
+/* 이벤트 컨테이너 수정 */
+.event-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    margin-top: 5px;
+    overflow: hidden; /* 이벤트가 컨테이너를 벗어나지 않도록 설정 */
+  }
+  
+  /* 이벤트 바 스타일 수정 */
+  .event-bar {
+    position: relative; /* absolute에서 relative로 변경 */
+    height: 20px;
+    font-size: 11px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: white;
+    padding: 3px 5px;
+    margin-bottom: 2px;
+    z-index: 10;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  /* 이벤트 시작/중간/끝 위치 조정 */
+  .event-start {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    width: calc(100% - 5px);
+    margin-right: 0;
+  }
+  
+  .event-middle {
+    border-radius: 0;
+    width: 100%;
+  }
+  
+  .event-end {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    width: calc(100% - 5px);
+    margin-left: 0;
+  }
+  
+  .event-single {
+    border-radius: 3px;
+    width: calc(100% - 10px);
+  }
