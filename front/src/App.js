@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import Dashboard from './components/Dashboard';
 import Slider from './components/Slider';
 import Footer from './components/Footer';
+import Sidebar from './components/Sidebar'; // 사이드바 컴포넌트 추가
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import ForgotPassword from './components/auth/ForgotPassword';
@@ -15,6 +16,7 @@ import './css/AuthStyles.css'; // 인증 관련 CSS 임포트
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // 사이드바 상태 관리
   
   // 페이지 로드 시 인증 상태 확인
   useEffect(() => {
@@ -42,13 +44,16 @@ function App() {
   const HomePage = () => (
     <>
       <Header onLogout={handleLogout} />
-      <main className="main-content">
-        <div className="container">
-          <Hero />
-          <Dashboard />
-          <Slider />
-        </div>
-      </main>
+      <div className={`app-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <main className="main-content">
+          <div className="container">
+            <Hero />
+            <Dashboard />
+            <Slider />
+          </div>
+        </main>
+      </div>
       <Footer />
     </>
   );

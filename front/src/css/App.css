@@ -49,3 +49,285 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* 사이드바와 메인 콘텐츠를 포함하는 컨테이너 */
+.app-container {
+    display: flex;
+    position: relative;
+    min-height: calc(100vh - 140px); /* 헤더와 푸터 높이 제외 */
+  }
+  
+  /* 메인 콘텐츠 영역 스타일 */
+  .main-content {
+    flex: 1;
+    transition: margin-left 0.3s ease;
+    width: 100%;
+  }
+  
+  /* 사이드바가 열려있을 때 메인 콘텐츠 영역 조정 */
+  .app-container.sidebar-open .main-content {
+    margin-left: 300px;
+  }
+  
+  /* 사이드바가 닫혀있을 때 메인 콘텐츠 영역 조정 */
+  .app-container.sidebar-closed .main-content {
+    margin-left: 50px;
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 1200px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 250px;
+    }
+  }
+  
+  /* 태블릿 화면 */
+  @media (max-width: 992px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 250px;
+    }
+  }
+  
+  /* 모바일 화면 */
+  @media (max-width: 768px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 0;
+      opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+    }
+    
+    .app-container.sidebar-closed .main-content {
+      margin-left: 0;
+    }
+  }
+
+  /* 사이드바와 메인 콘텐츠를 포함하는 컨테이너 */
+.app-container {
+    display: flex;
+    position: relative;
+    min-height: calc(100vh - 140px); /* 헤더와 푸터 높이 제외 */
+  }
+  
+  /* 메인 콘텐츠 영역 스타일 */
+  .main-content {
+    flex: 1;
+    transition: margin-left 0.3s ease;
+    width: 100%;
+  }
+  
+  /* 사이드바가 열려있을 때 메인 콘텐츠 영역 조정 */
+  .app-container.sidebar-open .main-content {
+    margin-left: 300px;
+  }
+  
+  /* 사이드바가 닫혀있을 때 메인 콘텐츠 영역 조정 */
+  .app-container.sidebar-closed .main-content {
+    margin-left: 40px;
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 1200px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 250px;
+    }
+  }
+  
+  /* 태블릿 화면 */
+  @media (max-width: 992px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 250px;
+    }
+  }
+  
+  /* 모바일 화면 */
+  @media (max-width: 768px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 0;
+      opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+    }
+    
+    .app-container.sidebar-closed .main-content {
+      margin-left: 0;
+    }
+  }
+/* 사이드바와 메인 콘텐츠를 포함하는 컨테이너 */
+.app-container {
+    display: flex;
+    position: relative;
+    min-height: calc(100vh - 140px); /* 헤더와 푸터 높이 제외 */
+  }
+  
+  /* 메인 콘텐츠 영역 스타일 */
+  .main-content {
+    flex: 1;
+    transition: margin-left 0.3s ease;
+    width: 100%;
+  }
+  
+  /* 사이드바가 열려있을 때 메인 콘텐츠 영역 조정 */
+  .app-container.sidebar-open .main-content {
+    margin-left: 400px;
+  }
+  
+  /* 사이드바가 닫혀있을 때 메인 콘텐츠 영역 조정 */
+  .app-container.sidebar-closed .main-content {
+    margin-left: 40px;
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 1200px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 400px;
+    }
+  }
+  
+  /* 태블릿 화면 */
+  @media (max-width: 992px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 0;
+      opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+    }
+    
+    .sidebar-container.open {
+      width: 100%;
+      max-width: 400px;
+    }
+  }
+  
+  /* 모바일 화면 */
+  @media (max-width: 768px) {
+    .app-container.sidebar-open .main-content {
+      margin-left: 0;
+      opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+    }
+    
+    .app-container.sidebar-closed .main-content {
+      margin-left: 0;
+    }
+  }
+
+  /* 사이드바와 메인 콘텐츠를 포함하는 컨테이너 */
+.app-container {
+  display: flex;
+  position: relative;
+  min-height: calc(100vh - 140px); /* 헤더와 푸터 높이 제외 */
+}
+
+/* 메인 콘텐츠 영역 스타일 */
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  width: 100%;
+}
+
+/* 사이드바가 열려있을 때 메인 콘텐츠 영역 조정 */
+.app-container.sidebar-open .main-content {
+  margin-left: 400px;
+}
+
+/* 사이드바가 닫혀있을 때 메인 콘텐츠 영역 조정 */
+.app-container.sidebar-closed .main-content {
+  margin-left: 40px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 1200px) {
+  .app-container.sidebar-open .main-content {
+    margin-left: 400px;
+  }
+}
+
+/* 태블릿 화면 */
+@media (max-width: 992px) {
+  .app-container.sidebar-open .main-content {
+    margin-left: 0;
+    opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+  }
+  
+  .sidebar-container.open {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+/* 모바일 화면 */
+@media (max-width: 768px) {
+  .app-container.sidebar-open .main-content {
+    margin-left: 0;
+    opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+  }
+  
+  .app-container.sidebar-closed .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar-container.open .sidebar-toggle {
+    left: 300px; /* 모바일에서는 사이드바 크기 줄임 */
+  }
+  
+  .sidebar-container.open {
+    width: 300px;
+  }
+}
+/* 사이드바와 메인 콘텐츠를 포함하는 컨테이너 */
+.app-container {
+  display: flex;
+  position: relative;
+  min-height: calc(100vh - 140px); /* 헤더와 푸터 높이 제외 */
+}
+
+/* 메인 콘텐츠 영역 스타일 */
+.main-content {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  width: 100%;
+}
+
+/* 사이드바가 열려있을 때 메인 콘텐츠 영역 조정 */
+.app-container.sidebar-open .main-content {
+  margin-left: 400px;
+}
+
+/* 사이드바가 닫혀있을 때 메인 콘텐츠 영역 조정 */
+.app-container.sidebar-closed .main-content {
+  margin-left: 40px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 1200px) {
+  .app-container.sidebar-open .main-content {
+    margin-left: 400px;
+  }
+}
+
+/* 태블릿 화면 */
+@media (max-width: 992px) {
+  .app-container.sidebar-open .main-content {
+    margin-left: 0;
+    opacity: 0.5; /* 사이드바가 열렸을 때 메인 콘텐츠를 약간 어둡게 */
+  }
+  
+  .sidebar-container.open {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+/* 미디어 쿼리 단순화 */
+@media (max-width: 768px) {
+  .app-container.sidebar-open .main-content {
+    margin-left: 0;
+    opacity: 0.5;
+  }
+  
+  .app-container.sidebar-closed .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar-container.open {
+    width: 300px;
+  }
+  
+  .sidebar-container.open .sidebar-toggle {
+    left: 300px;
+  }
+}

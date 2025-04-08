@@ -31,19 +31,19 @@ const Calendar = ({ selectedDate, onDateSelect, schedules, onMonthChange }) => {
         date,
         currentMonth: false,
         isPrevMonth: true,
-        isNextMonth: false, // 이부분이 잘못되어 있습니다. isNextMonth를 false로 변경
+        isNextMonth: false,
         hasEvent: false,
         schedules: []
       });
     }
     
-    // 현재 달의 날짜 추가 - 이벤트 처리 수정
+    // 현재 달의 날짜 추가 - 이벤트 처리 개선
     for (let i = 1; i <= daysInMonth; i++) {
       const date = moment(currentDate).date(i);
       const dateStr = date.format('YYYY-MM-DD');
       
       // 해당 날짜의 일정 찾기
-      const dateSchedules = schedules.filter(schedule => {
+      const allDateSchedules = schedules.filter(schedule => {
         const start = moment(schedule.start);
         const end = moment(schedule.end);
         return date.isSameOrAfter(start, 'day') && date.isSameOrBefore(end, 'day');
@@ -61,20 +61,23 @@ const Calendar = ({ selectedDate, onDateSelect, schedules, onMonthChange }) => {
           // 1일짜리 이벤트인 경우 시작과 종료가 모두 true
           isSingleDay: isStart && isEnd
         };
-      }).slice(0, 2); // 최대 2개까지만 표시
+      });
+      
+      // 일정 정렬 및 위치 할당
+      const assignedSchedules = assignSchedulePositions(allDateSchedules);
       
       calendarDays.push({
         date,
         currentMonth: true,
         isPrevMonth: false,
         isNextMonth: false,
-        hasEvent: dateSchedules.length > 0,
-        schedules: dateSchedules
+        hasEvent: assignedSchedules.length > 0,
+        schedules: assignedSchedules
       });
     }
     
-    // 다음 달의 날짜 추가 (마지막 주 빈칸 채우기) - 이 부분이 누락되었습니다!
-    const remainingDays = 35 - calendarDays.length; // 7x6 그리드
+    // 다음 달의 날짜 추가 
+    const remainingDays = 35 - calendarDays.length; // 7x5 그리드
     for (let i = 1; i <= remainingDays; i++) {
       const date = moment(lastDay).add(i, 'days');
       calendarDays.push({
@@ -105,13 +108,48 @@ const Calendar = ({ selectedDate, onDateSelect, schedules, onMonthChange }) => {
     onDateSelect(date.format('YYYY-MM-DD'));
   };
   
+  // 일정 위치 할당 함수
+  const assignSchedulePositions = (schedules) => {
+    // 이미 할당된 위치를 추적하는 배열
+    const occupiedPositions = [false, false]; // 위치 0과 1이 할당됐는지 추적
+    const result = [];
+    
+    // 일정 정렬 (기간이 긴 것, 시작일이 빠른 것 우선)
+    const sortedSchedules = [...schedules].sort((a, b) => {
+      // 1. 기간이 긴 일정 우선
+      const aLen = moment(a.end).diff(moment(a.start), 'days');
+      const bLen = moment(b.end).diff(moment(b.start), 'days');
+      if (bLen !== aLen) return bLen - aLen;
+      
+      // 2. 시작일이 빠른 일정 우선
+      return moment(a.start).diff(moment(b.start));
+    });
+    
+    // 각 일정에 위치 할당
+    sortedSchedules.forEach(schedule => {
+      // 사용 가능한 첫 번째 위치 찾기
+      let position = occupiedPositions.findIndex(pos => !pos);
+      
+      // 모든 위치가 이미 사용 중이면 더 이상 표시하지 않음
+      if (position === -1) return;
+      
+      // 위치 할당 및 점유 상태 업데이트
+      occupiedPositions[position] = true;
+      result.push({
+        ...schedule,
+        position // 위치 정보 추가
+      });
+    });
+    
+    return result;
+  };
+  
   // 날짜 셀 렌더링 - 이벤트 표시 부분 수정
   const renderDayCell = (dayInfo) => {
     const dateStr = dayInfo.date.format('YYYY-MM-DD');
     const isToday = dayInfo.date.isSame(moment(), 'day');
     const isSelected = dateStr === selectedDate;
     
-    // 오늘 표시 스타일이 다른 스타일을 덮어쓰지 않도록 클래스 순서 조정
     const cellClasses = [
       'calendar-day',
       !dayInfo.currentMonth ? 'other-month' : '',
@@ -125,10 +163,11 @@ const Calendar = ({ selectedDate, onDateSelect, schedules, onMonthChange }) => {
     const renderEvents = () => {
       if (!dayInfo.schedules || dayInfo.schedules.length === 0) return null;
       
-      return dayInfo.schedules.map((schedule, index) => {
-        // 이벤트 클래스 결정
+      return dayInfo.schedules.map((schedule) => {
+        // 이벤트 클래스 결정 - position 속성 사용
         const eventClasses = [
           'event-bar',
+          `event-position-${schedule.position}`, // 할당된 위치 사용
           schedule.isStart ? 'event-start' : '',
           schedule.isEnd ? 'event-end' : '',
           schedule.isMiddle ? 'event-middle' : '',
@@ -137,18 +176,27 @@ const Calendar = ({ selectedDate, onDateSelect, schedules, onMonthChange }) => {
         
         return (
           <div 
-            key={`${dateStr}-event-${index}`} 
+            key={`${dateStr}-event-${schedule.id}`} 
             className={eventClasses}
             style={{ 
               backgroundColor: schedule.color,
               opacity: schedule.completed ? 0.7 : 1
-              // top, left, right 속성 제거
             }}
             title={`${schedule.title}${schedule.start !== schedule.end ? ` (${moment(schedule.start).format('M/D')}~${moment(schedule.end).format('M/D')})` : ''}`}
           >
-            {/* 시작일이거나 한 날짜 이벤트인 경우에만 텍스트 표시 */}
+            {/* 시작일이거나 한 날짜 이벤트인 경우에만 텍스트 표시 - 타이틀 표시 조건 개선 */}
             {(schedule.isStart || schedule.isSingleDay) && (
-              <span className="event-title">{schedule.title}</span>
+              <span className="event-title">
+                {schedule.title}
+              </span>
+            )}
+            {/* 중간일의 경우 텍스트 표시하지 않음 */}
+            {schedule.isMiddle && !schedule.isStart && !schedule.isEnd && (
+              <span className="event-title-hidden"></span>
+            )}
+            {/* 종료일이지만 시작일이 아닌 경우, 텍스트 표시하지 않음 */}
+            {schedule.isEnd && !schedule.isStart && (
+              <span className="event-title-hidden"></span>
             )}
           </div>
         );
@@ -169,9 +217,11 @@ const Calendar = ({ selectedDate, onDateSelect, schedules, onMonthChange }) => {
     );
   };
   
+  // 캘린더 데이터 생성
   const calendarDays = generateCalendarDays();
   const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
   
+  // 컴포넌트 렌더링
   return (
     <section className="calendar-section">
       <h3 className="section-title">작업 캘린더</h3>
