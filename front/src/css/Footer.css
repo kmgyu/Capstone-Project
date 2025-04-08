@@ -21,16 +21,19 @@ footer {
 
 .footer-links {
     list-style: none;
+    padding-left: 0; /* 추가: 기본 패딩 제거 */
 }
 
 .footer-links li {
     margin-bottom: 10px;
+    display: block; /* 추가: 세로 정렬 위해 */
 }
 
 .footer-links a {
     color: #aaa;
     text-decoration: none;
     transition: var(--transition);
+    display: block; /* 추가: 링크를 블록 요소로 만들어 세로 정렬 */
 }
 
 .footer-links a:hover {
@@ -58,6 +61,18 @@ footer {
 .social-links a:hover {
     background-color: var(--accent-color);
     transform: translateY(-3px);
+}
+
+/* 추가: 연락처 아이콘 스타일 */
+.footer-column p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.footer-column p svg {
+    margin-right: 10px;
+    width: 16px;
 }
 
 .copyright {

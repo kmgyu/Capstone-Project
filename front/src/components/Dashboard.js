@@ -1,14 +1,14 @@
 import Calendar from './Calendar';
-import TodoList from './TodoList'; 
+import TodoModal from './TodoModal'; // TodoList 대신 TodoModal 사용
 import '../css/Dashboard.css';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import moment from 'moment';
-// 기존 Dashboard 임포트 부분 유지
 
 const Dashboard = () => {
   // 공통 상태
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
   const [schedules, setSchedules] = useState([]);
+  const [isTodoModalOpen, setIsTodoModalOpen] = useState(false); // 모달 상태 추가
   const previousYearMonth = useRef('');
   
   // 선택된 날짜의 일정만 필터링
@@ -20,6 +20,17 @@ const Dashboard = () => {
     // 선택된 날짜가 시작일과 종료일 사이에 있으면 true
     return selected.isSameOrAfter(start, 'day') && selected.isSameOrBefore(end, 'day');
   });
+  
+  // 날짜 선택 핸들러 수정 - 날짜 선택 시 모달 열기
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    setIsTodoModalOpen(true); // 날짜 선택 시 모달 열기
+  };
+  
+  // 모달 닫기 핸들러
+  const handleCloseModal = () => {
+    setIsTodoModalOpen(false);
+  };
   
   // useCallback을 사용하여 함수 메모이제이션
   const fetchMonthSchedules = useCallback((year, month) => {
@@ -91,28 +102,29 @@ const Dashboard = () => {
   
   return (
     <div className="dashboard">
-      {/* 기존 Dashboard 내용을 유지하면서 Calendar와 TodoList를 추가 */}
       <div className="dashboard-section">
         <div className="dashboard-row">
-          <div className="dashboard-card">
+          <div className="dashboard-card calendar-card">
+            {/* Calendar 컴포넌트에 새로운 핸들러 전달 */}
             <Calendar 
               selectedDate={selectedDate}
-              onDateSelect={setSelectedDate}
+              onDateSelect={handleDateSelect}
               schedules={schedules}
               onMonthChange={fetchMonthSchedules}
             />
           </div>
-          <div className="dashboard-card">
-            <TodoList 
-              date={selectedDate}
-              todos={filteredSchedules}
-              onAddTodo={addSchedule}
-              onDeleteTodo={deleteSchedule}
-              onToggleComplete={toggleScheduleComplete}
-            />
-          </div>
+          
+          {/* TodoList 컴포넌트 제거하고 TodoModal 컴포넌트 추가 */}
+          <TodoModal
+            isOpen={isTodoModalOpen}
+            onClose={handleCloseModal}
+            date={selectedDate}
+            todos={filteredSchedules}
+            onAddTodo={addSchedule}
+            onDeleteTodo={deleteSchedule}
+            onToggleComplete={toggleScheduleComplete}
+          />
         </div>
-        {/* 기존 Dashboard 컴포넌트의 나머지 부분 */}
       </div>
     </div>
   );

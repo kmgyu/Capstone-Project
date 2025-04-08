@@ -51,7 +51,6 @@ const Header = ({ onLogout }) => {
         <ul className={`nav-menu ${showMobileMenu ? 'show-mobile-menu' : ''}`}>
           <li><a href="#" className="active">홈</a></li>
           <li><a href="#">드론 현황</a></li>
-          <li><a href="#">작업 일정</a></li>
           <li><a href="#">농장 관리</a></li>
           <li><a href="#">도움말</a></li>
         </ul>

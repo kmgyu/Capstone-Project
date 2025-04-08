@@ -91,7 +91,7 @@ const ForgotPassword = () => {
         
         <div className="login-footer">
           <p>&copy; 2025 농업드론관리 시스템. All Rights Reserved.</p>
-          <div className="footer-links">
+          <div className="auth_footer-links">
             <a href="#">이용약관</a>
             <a href="#">개인정보처리방침</a>
             <a href="#">고객센터</a>

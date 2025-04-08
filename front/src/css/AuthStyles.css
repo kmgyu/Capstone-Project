@@ -264,20 +264,20 @@
     font-size: 12px;
   }
   
-  .footer-links {
+  .auth_footer-links {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 10px;
   }
   
-  .footer-links a {
+  .auth_footer-links a {
     color: #666;
     text-decoration: none;
     transition: var(--transition);
   }
   
-  .footer-links a:hover {
+  .auth_footer-links a:hover {
     color: var(--primary-color);
   }
   

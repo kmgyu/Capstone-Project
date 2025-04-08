@@ -11,6 +11,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
+import Modal from './components/Modal';
 import './css/App.css';
 import './css/AuthStyles.css'; // 인증 관련 CSS 임포트
 
