@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   // faDrone, 
@@ -49,9 +49,9 @@ const Header = ({ onLogout }) => {
         </div>
         
         <ul className={`nav-menu ${showMobileMenu ? 'show-mobile-menu' : ''}`}>
-          <li><a href="#" className="active">홈</a></li>
+          <li><Link to="/" className={window.location.pathname === '/' ? 'active' : ''}>홈</Link></li>
           <li><a href="#">드론 현황</a></li>
-          <li><a href="#">농장 관리</a></li>
+          <li><Link to="/farmland" className={window.location.pathname === '/farmland' ? 'active' : ''}>농장 관리</Link></li>
           <li><a href="#">도움말</a></li>
         </ul>
         

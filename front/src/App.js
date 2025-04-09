@@ -12,6 +12,7 @@ import Register from './components/auth/Register';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import Modal from './components/Modal';
+import FarmlandManagement from './components/FarmlandManagement'; // 노지 관리 컴포넌트 추가
 import './css/App.css';
 import './css/AuthStyles.css'; // 인증 관련 CSS 임포트
 
@@ -52,6 +53,22 @@ function App() {
             <Hero />
             <Dashboard />
             <Slider />
+          </div>
+        </main>
+      </div>
+      <Footer />
+    </>
+  );
+
+  // 노지 관리 페이지 컴포넌트
+  const FarmlandPage = () => (
+    <>
+      <Header onLogout={handleLogout} />
+      <div className={`app-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <main className="main-content">
+          <div className="container">
+            <FarmlandManagement />
           </div>
         </main>
       </div>
@@ -111,6 +128,18 @@ function App() {
             element={
               isAuthenticated ? (
                 <HomePage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          
+          {/* 노지 관리 페이지 라우트 추가 */}
+          <Route
+            path="/farmland"
+            element={
+              isAuthenticated ? (
+                <FarmlandPage />
               ) : (
                 <Navigate to="/login" replace />
               )
