@@ -9,6 +9,7 @@ import {
   faSort
 } from '@fortawesome/free-solid-svg-icons';
 import '../css/FarmlandManagement.css';
+import AddFarmlandModal from './AddFarmlandModal';
 
 const FarmlandManagement = () => {
   // 정렬 상태 관리
@@ -127,9 +128,15 @@ const FarmlandManagement = () => {
     }
   };
 
-  // 노지 추가 핸들러 (임시)
+  // 노지 추가 핸들러
   const handleAddFarmland = () => {
     setShowAddModal(true);
+  };
+  
+  // 새 노지 추가 처리 함수
+  const handleSaveFarmland = (newFarmland) => {
+    // 기존 노지 데이터에 새 노지 추가
+    setFarmlands([newFarmland, ...farmlands]);
   };
 
   // 노지 클릭 핸들러 (임시)
@@ -258,6 +265,13 @@ const FarmlandManagement = () => {
           </div>
         )}
       </div>
+      
+      {/* 노지 추가 모달 */}
+      <AddFarmlandModal 
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAddFarmland={handleSaveFarmland}
+      />
     </div>
   );
 };
