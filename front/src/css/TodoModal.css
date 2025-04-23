@@ -1,0 +1,172 @@
+.todo-status {
+    font-size: 13px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-right: 8px;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .completed-status {
+    background-color: #4caf50;
+  }
+  
+  .pending-status {
+    background-color: #ff9800;
+  }/* TodoModal 전용 스타일 */
+  .todo-modal {
+    overflow: hidden;
+  }
+  
+  .todo-modal .modal-header {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .todo-modal .modal-title {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .todo-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .date-icon {
+    font-size: 1.2em;
+  }
+  
+  .day-of-week {
+    font-size: 0.9em;
+    opacity: 0.9;
+    margin-left: 5px;
+  }
+  
+  .todo-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* 일정 추가 폼 */
+  .todo-form {
+    display: flex;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .todo-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+  }
+  
+  .todo-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .todo-button:hover {
+    background-color: var(--dark-color);
+  }
+  
+  /* 할 일 목록 */
+  .todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .todo-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+  }
+  
+  .todo-checkbox {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary-color);
+  }
+  
+  .todo-text {
+    flex: 1;
+    font-size: 16px;
+    transition: opacity 0.3s;
+  }
+  
+  .todo-item.completed .todo-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  
+  .todo-type {
+    background-color: #eee;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-right: 10px;
+  }
+  
+  .todo-delete {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  
+  .todo-delete:hover {
+    opacity: 1;
+  }
+  
+  /* 일정이 없을 때 */
+  .no-todos {
+    text-align: center;
+    padding: 30px 0;
+    color: #777;
+  }
+  
+  .add-todo-prompt {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: var(--primary-color);
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 576px) {
+    .todo-list {
+      max-height: calc(60vh - 150px);
+    }
+    
+    .todo-item {
+      padding: 12px;
+    }
+  }
